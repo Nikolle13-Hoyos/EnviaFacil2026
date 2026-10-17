@@ -64,9 +64,9 @@ CREATE TABLE movimientos_envio (
 );
 
 INSERT INTO clientes (nombre, telefono, email, direccion, ciudad, departamento) VALUES
-('Laura Gómez','3001234567','laura@example.com','Calle 45 #78-32','Bogotá','Cundinamarca'),
-('Valentina Rojas','3015557788','valentina@example.com','Carrera 23 #10-20','Cali','Valle del Cauca'),
-('Sofía Torres','3021112233','sofia@example.com','Carrera 43 #20-15','Medellín','Antioquia');
+('Laura Gómez','3001234567','laura.Gomez@icloud.com','Calle 45 #78-32','Bogotá','Cundinamarca'),
+('Valentina Rojas','3015557788','valentinaRJ@gmail.com','Carrera 23 #10-20','Cali','Valle del Cauca'),
+('Sofía Torres','3021112233','valentinaRJ@gmail.com','Carrera 43 #20-15','Medellín','Antioquia');
 
 INSERT INTO pedidos
 (cliente_id, origen, destino, peso_kg, valor_declarado, transportadora, guia, estado)

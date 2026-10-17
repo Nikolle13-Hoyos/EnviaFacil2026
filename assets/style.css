@@ -1,0 +1,109 @@
+body {
+    font-family: Inter, Arial, sans-serif;
+    background: #f7f8fc;
+    color: #303748;
+}
+
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+    width: 245px;
+    background: #182038;
+    color: white;
+    padding: 28px 18px;
+}
+
+.brand {
+    font-size: 23px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.brand span { color: #8f9aff; }
+
+.sidebar a {
+    display: block;
+    color: #dce1f0;
+    text-decoration: none;
+    padding: 11px 14px;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+
+.sidebar a:hover, .sidebar a.active {
+    background: #4b58df;
+    color: white;
+}
+
+.content { flex: 1; padding: 42px 48px; }
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+h1 { font-size: 30px; font-weight: 800; color: #182038; margin-bottom: 4px; }
+h2 { font-size: 20px; font-weight: 750; color: #182038; margin: 0; }
+p { color: #6f7789; }
+
+.metric, .panel, .form-card {
+    background: white;
+    border: 1px solid #e2e6f0;
+    border-radius: 18px;
+    padding: 23px;
+    box-shadow: 0 6px 24px rgba(30, 40, 70, .04);
+}
+
+.metric small { display:block; color:#70798d; }
+.metric strong { display:block; font-size:32px; color:#182038; margin:4px 0; }
+.metric span { font-size:12px; color:#798296; }
+
+.status {
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:700;
+    background:#eef1f7;
+    color:#596174;
+    text-transform: capitalize;
+}
+
+.status-entregado { background:#dff6ec; color:#16805d; }
+.status-en_reparto { background:#fff0d9; color:#ad6900; }
+.status-en_transito { background:#e4ebff; color:#3d58c9; }
+
+.form-card { max-width: 920px; margin: auto; }
+.form-card h1 { font-size: 27px; }
+
+.quote-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px;
+}
+
+label { font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+
+.btn-primary {
+    background:#4b58df;
+    border-color:#4b58df;
+}
+
+.simple-page { min-height:100vh; }
+.brand {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.logo {
+    width: 160px;
+    max-width: 100%;
+    height: 60px;
+    object-fit: contain;
+    object-position: left center;
+    display: block;
+}

@@ -9,91 +9,226 @@ $stmt = $pdo->query(
 );
 
 $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$totalClientes = count($clientes);
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Clientes | Gestor de Envíos</title>
+
+    <title>Clientes | EnviaFácil</title>
+
     <link rel="icon" type="image/png" href="assets/img/logofondo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/style.css">
 </head>
-<body class="simple-page">
-<div class="container py-5">
 
-    <a href="index.php" class="text-decoration-none">
-        ← Volver
-    </a>
+<body>
 
-    <h1 class="mt-4">Mis clientes</h1>
-    <p>Consulta, edita o elimina los clientes</p>
+<div class="app">
 
-    <div class="table-responsive mt-4">
-        <table class="table table-striped table-bordered align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                    <th>Dirección</th>
-                    <th>Ciudad</th>
-                    <th>Departamento</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php if (empty($clientes)): ?>
-                <tr>
-                    <td colspan="8" class="text-center">
-                        Todavía no hay clientes registrados.
-                    </td>
-                </tr>
-            <?php else: ?>
-                <?php foreach ($clientes as $cliente): ?>
-                    <tr>
-                        <td><?= (int) $cliente['id'] ?></td>
-                        <td><?= htmlspecialchars($cliente['nombre'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                        <td><?= htmlspecialchars($cliente['telefono'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                        <td><?= htmlspecialchars($cliente['email'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                        <td><?= htmlspecialchars($cliente['direccion'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                        <td><?= htmlspecialchars($cliente['ciudad'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                        <td><?= htmlspecialchars($cliente['departamento'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                <a
-                                    href="editar_cliente.php?id=<?= (int) $cliente['id'] ?>"
-                                    class="btn btn-warning btn-sm">
-                                    Editar
-                                </a>
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
 
-                                <form
-                                    action="eliminar_cliente.php"
-                                    method="post"
-                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar este cliente?');">
+        <div class="brand">
+            <span>Envia</span>Fácil
+        </div>
 
-                                    <input
-                                        type="hidden"
-                                        name="id"
-                                        value="<?= (int) $cliente['id'] ?>">
+        <div class="small opacity-75 mb-3">
+            Crecemos juntos, entrega a entrega.
+        </div>
 
-                                    <button
-                                        type="submit"
-                                        class="btn btn-danger btn-sm">
-                                        Eliminar
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+        <a href="index.php">Inicio</a>
+        <a href="pedido.php">Pedidos</a>
+        <a href="cotizar.php">Cotizaciones</a>
+        <a href="pedido.php">Guías</a>
+        <a class="active" href="clientes.php">Clientes</a>
+        <a href="index.php">Historial de envíos</a>
+        <a href="index.php">Reportes</a>
+
+    </aside>
+
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="content">
+
+        <!-- ENCABEZADO -->
+        <div class="topbar">
+
+            <div>
+                <h1>Mis clientes</h1>
+                <p>Administra y consulta la información de tus clientes.</p>
+            </div>
+
+            <a href="index.php" class="btn btn-outline-primary">
+                ← Volver al inicio
+            </a>
+
+        </div>
+
+
+        <!-- TARJETA DE TOTAL -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="metric">
+
+                    <small>Total de clientes</small>
+
+                    <strong><?= $totalClientes ?></strong>
+
+                    <span>Clientes registrados</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PANEL DE CLIENTES -->
+        <section class="panel">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <div>
+                    <h2>Listado de clientes</h2>
+
+                    <p class="muted">
+                        Consulta la información y administra tus clientes.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- TABLA -->
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Dirección</th>
+                            <th>Ciudad</th>
+                            <th>Departamento</th>
+                            <th>Acciones</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <?php if (empty($clientes)): ?>
+
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+
+                                <p class="mb-0 muted">
+                                    Todavía no hay clientes registrados.
+                                </p>
+
+                            </td>
+                        </tr>
+
+                    <?php else: ?>
+
+                        <?php foreach ($clientes as $cliente): ?>
+
+                            <tr>
+
+                                <td>
+                                    #<?= (int) $cliente['id'] ?>
+                                </td>
+
+                                <td>
+                                    <?= htmlspecialchars($cliente['nombre'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                                </td>
+
+                                <td>
+                                    <?= htmlspecialchars($cliente['telefono'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                                </td>
+
+                                <td>
+                                    <?= htmlspecialchars($cliente['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                                </td>
+
+                                <td>
+                                    <?= htmlspecialchars($cliente['direccion'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                                </td>
+
+                                <td>
+                                    <?= htmlspecialchars($cliente['ciudad'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                                </td>
+
+                                <td>
+                                    <?= htmlspecialchars($cliente['departamento'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex gap-2">
+
+                                        <a
+                                            href="editar_cliente.php?id=<?= (int) $cliente['id'] ?>"
+                                            class="btn btn-outline-primary btn-sm">
+
+                                            Editar
+
+                                        </a>
+
+
+                                        <form
+                                            action="eliminar_cliente.php"
+                                            method="post"
+                                            onsubmit="return confirm('¿Estás seguro de que deseas eliminar este cliente?');">
+
+                                            <input
+                                                type="hidden"
+                                                name="id"
+                                                value="<?= (int) $cliente['id'] ?>">
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger btn-sm">
+
+                                                Eliminar
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        <?php endforeach; ?>
+
+                    <?php endif; ?>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
 </div>
+
 </body>
 </html>

@@ -15,6 +15,7 @@ $stmt = $pdo->prepare(
      FROM clientes
      WHERE id = ?"
 );
+
 $stmt->execute([$id]);
 $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -24,6 +25,7 @@ if (!$cliente) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $nombre = trim($_POST['nombre'] ?? '');
     $telefono = trim($_POST['telefono'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -50,9 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $departamento === '' ||
         !filter_var($email, FILTER_VALIDATE_EMAIL)
     ) {
+
         $error = 'Todos los campos son obligatorios y el correo debe ser válido.';
+
     } else {
+
         try {
+
             $stmt = $pdo->prepare(
                 "UPDATE clientes
                  SET nombre = ?,
@@ -76,8 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             header('Location: clientes.php');
             exit;
+
         } catch (PDOException $e) {
+
             error_log($e->getMessage());
+
             $error = 'No se pudieron actualizar los datos del cliente.';
         }
     }
@@ -87,79 +96,225 @@ function e($valor) {
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
 }
 ?>
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
+
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Editar cliente</title>
+
+    <title>Editar cliente | EnviaFácil</title>
+
+    <link rel="icon" type="image/png" href="assets/img/logofondo.png">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
+
     <link rel="stylesheet" href="assets/style.css">
+
 </head>
-<body class="simple-page">
-<div class="container py-5">
-    <a href="clientes.php" class="text-decoration-none">
-        ← Volver a clientes
-    </a>
 
-    <div class="form-card mt-3">
-        <h1>Editar cliente</h1>
-        <p class="text-secondary">Modifica la información del cliente.</p>
+<body>
 
-        <?php if ($error !== ''): ?>
-            <div class="alert alert-danger">
-                <?= e($error) ?>
-            </div>
-        <?php endif; ?>
+<div class="app">
 
-        <form method="post" class="row g-3">
-            <div class="col-md-6">
-                <label class="form-label">Nombre *</label>
-                <input required name="nombre" class="form-control"
-                       value="<?= e($cliente['nombre']) ?>">
-            </div>
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
 
-            <div class="col-md-6">
-                <label class="form-label">Teléfono *</label>
-                <input required type="tel" name="telefono" class="form-control"
-                       value="<?= e($cliente['telefono']) ?>">
-            </div>
+        <div class="brand">
+            <span>Envia</span>Fácil
+        </div>
 
-            <div class="col-md-6">
-                <label class="form-label">Correo electrónico *</label>
-                <input required type="email" name="email" class="form-control"
-                       value="<?= e($cliente['email']) ?>">
-            </div>
+        <div class="small opacity-75 mb-3">
+            Crecemos juntos, entrega a entrega.
+        </div>
 
-            <div class="col-md-6">
-                <label class="form-label">Ciudad *</label>
-                <input required name="ciudad" class="form-control"
-                       value="<?= e($cliente['ciudad']) ?>">
-            </div>
+        <a href="index.php">Inicio</a>
+        <a href="pedido.php">Pedidos</a>
+        <a href="cotizar.php">Cotizaciones</a>
+        <a href="pedido.php">Guías</a>
+        <a class="active" href="clientes.php">Clientes</a>
+        <a href="index.php">Historial de envíos</a>
+        <a href="index.php">Reportes</a>
 
-            <div class="col-md-6">
-                <label class="form-label">Departamento *</label>
-                <input required name="departamento" class="form-control"
-                       value="<?= e($cliente['departamento']) ?>">
+    </aside>
+
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="content">
+
+        <!-- ENCABEZADO -->
+        <div class="topbar">
+
+            <div>
+
+                <h1>Editar cliente</h1>
+
+                <p>
+                    Actualiza la información de tus clientes.
+                </p>
+
             </div>
 
-            <div class="col-12">
-                <label class="form-label">Dirección *</label>
-                <input required name="direccion" class="form-control"
-                       value="<?= e($cliente['direccion']) ?>">
+            <a href="clientes.php" class="btn btn-outline-primary">
+                ← Volver a clientes
+            </a>
+
+        </div>
+
+
+        <!-- FORMULARIO -->
+        <section class="panel">
+
+            <div class="mb-4">
+
+                <h2>Información del cliente</h2>
+
+                <p class="muted">
+                    Modifica los datos necesarios y guarda los cambios.
+                </p>
+
             </div>
 
-            <div class="col-12 d-flex gap-2 justify-content-end">
-                <a href="clientes.php" class="btn btn-secondary">
-                    Cancelar
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    Guardar cambios
-                </button>
-            </div>
-        </form>
-    </div>
+
+            <!-- MENSAJE DE ERROR -->
+            <?php if ($error !== ''): ?>
+
+                <div class="alert alert-danger">
+                    <?= e($error) ?>
+                </div>
+
+            <?php endif; ?>
+
+
+            <form method="post" class="row g-3">
+
+                <!-- NOMBRE -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Nombre completo *
+                    </label>
+
+                    <input
+                        required
+                        name="nombre"
+                        class="form-control"
+                        placeholder="Nombre del cliente"
+                        value="<?= e($cliente['nombre']) ?>">
+
+                </div>
+
+
+                <!-- TELEFONO -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Teléfono *
+                    </label>
+
+                    <input
+                        required
+                        type="tel"
+                        name="telefono"
+                        class="form-control"
+                        placeholder="Número de teléfono"
+                        value="<?= e($cliente['telefono']) ?>">
+
+                </div>
+
+
+                <!-- CORREO -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Correo electrónico *
+                    </label>
+
+                    <input
+                        required
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        placeholder="correo@ejemplo.com"
+                        value="<?= e($cliente['email']) ?>">
+
+                </div>
+
+
+                <!-- CIUDAD -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Ciudad *
+                    </label>
+
+                    <input
+                        required
+                        name="ciudad"
+                        class="form-control"
+                        placeholder="Ciudad"
+                        value="<?= e($cliente['ciudad']) ?>">
+
+                </div>
+
+
+                <!-- DEPARTAMENTO -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Departamento *
+                    </label>
+
+                    <input
+                        required
+                        name="departamento"
+                        class="form-control"
+                        placeholder="Departamento"
+                        value="<?= e($cliente['departamento']) ?>">
+
+                </div>
+
+
+                <!-- DIRECCION -->
+                <div class="col-12">
+
+                    <label class="form-label">
+                        Dirección *
+                    </label>
+
+                    <input
+                        required
+                        name="direccion"
+                        class="form-control"
+                        placeholder="Dirección completa"
+                        value="<?= e($cliente['direccion']) ?>">
+
+                </div>
+
+
+                <!-- BOTONES -->
+                <div class="col-12 d-flex gap-2 justify-content-end mt-4">
+
+                    <a href="clientes.php" class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        Guardar cambios
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
 </div>
+
 </body>
 </html>

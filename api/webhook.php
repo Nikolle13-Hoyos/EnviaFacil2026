@@ -1,17 +1,5 @@
 <?php
-/*
- * EJEMPLO CONCEPTUAL DE WEBHOOK.
- *
- * Una transportadora real podría enviar un POST a este endpoint
- * cuando cambie el estado de una guía.
- *
- * En producción:
- * 1. Validar firma/token de seguridad.
- * 2. Validar que la guía exista.
- * 3. Guardar el nuevo estado.
- * 4. Registrar el movimiento.
- * 5. Opcionalmente notificar al cliente.
- */
+
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../config/db.php';
 

@@ -19,8 +19,7 @@ if (!$origen || !$destino || $peso <= 0) {
 }
 
 /*
- * SIMULACIÓN.
- * En producción esta función llamaría APIs autorizadas de cada transportadora.
+ Esta función llamaría APIs autorizadas de cada transportadora.
  */
 $base = max(9000, 8500 + ($peso * 1800));
 

@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="pedido.php">Guías</a>
         <a href="clientes.php">Clientes</a>
         <a href="index.php">Historial de envíos</a>
-        <a href="index.php">Reportes</a>
+        <a href="reportes.php">Reportes</a>
 
     </aside>
 

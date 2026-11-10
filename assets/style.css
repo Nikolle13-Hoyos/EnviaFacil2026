@@ -107,3 +107,54 @@ label { font-weight: 600; font-size: 13px; margin-bottom: 6px; }
     object-position: left center;
     display: block;
 }
+
+        .report-section {
+            margin-bottom: 24px;
+        }
+
+        .report-title {
+            font-size: 17px;
+            font-weight: 750;
+            color: #182038;
+            margin-bottom: 20px;
+        }
+
+        .report-chart {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        .report-filter {
+            background: #f7f8fc;
+            border: 1px solid #e2e6f0;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .report-icon {
+            font-size: 23px;
+            margin-bottom: 8px;
+        }
+
+        .report-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #798296;
+            font-size: 14px;
+        }
+
+        @media(max-width: 768px) {
+
+            .content {
+                padding: 25px 15px;
+            }
+
+            .topbar {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+        }

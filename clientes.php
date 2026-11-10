@@ -48,7 +48,7 @@ $totalClientes = count($clientes);
         <a href="pedido.php">Guías</a>
         <a class="active" href="clientes.php">Clientes</a>
         <a href="index.php">Historial de envíos</a>
-        <a href="index.php">Reportes</a>
+        <a href="reportes.php">Reportes</a>
 
     </aside>
 

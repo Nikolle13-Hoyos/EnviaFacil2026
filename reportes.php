@@ -1,5 +1,5 @@
-
 <?php
+require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/config/db.php';
 
 // FUNCION PARA PROTEGER LOS DATOS
@@ -288,10 +288,16 @@ foreach ($datosDestinos as $dato) {
     <a href="index.php">Inicio</a>
     <a href="pedido.php">Pedidos</a>
     <a href="cotizar.php">Cotizaciones</a>
-    <a href="pedido.php">Guías</a>
+    <a href="guias.php">Guías</a>
     <a href="clientes.php">Clientes</a>
     <a href="index.php">Historial de envíos</a>
     <a class="active" href="reportes.php">Reportes</a>
+
+    <div class="mt-4 pt-3 border-top border-secondary">
+        <div class="small opacity-75">Sesión iniciada como</div>
+        <div class="fw-semibold mb-2"><?= htmlspecialchars($_SESSION['usuario_nombre']) ?></div>
+        <a href="logout.php">Cerrar sesión</a>
+    </div>
 </aside>
 
     <!-- CONTENIDO PRINCIPAL -->

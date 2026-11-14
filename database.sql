@@ -74,3 +74,17 @@ VALUES
 (1,'Medellín','Bogotá',1.20,100000,'Servientrega','786543210','EN_TRANSITO'),
 (2,'Medellín','Cali',0.80,80000,'Inter Rapidísimo','786543211','ENTREGADO'),
 (3,'Medellín','Medellín',2.00,150000,'Coordinadora','786543212','EN_REPARTO');
+
+
+CREATE TABLE IF NOT EXISTS notificaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT NOT NULL,
+    guia_id INT NULL,
+    canal ENUM('whatsapp','correo') NOT NULL,
+    destinatario VARCHAR(150) NOT NULL,
+    asunto VARCHAR(200) NULL,
+    mensaje TEXT NOT NULL,
+    estado VARCHAR(30) NOT NULL DEFAULT 'simulado',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
+);

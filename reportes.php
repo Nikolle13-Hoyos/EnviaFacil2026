@@ -11,6 +11,7 @@ function h($valor) {
 $desde = $_GET['desde'] ?? '';
 $hasta = $_GET['hasta'] ?? '';
 $estado = $_GET['estado'] ?? '';
+$aviso = '';
 
 // ESTADOS PERMITIDOS
 $estadosPermitidos = [
@@ -20,6 +21,18 @@ $estadosPermitidos = [
     'EN_REPARTO',
     'ENTREGADO'
 ];
+
+// AGREGAR LOS ESTADOS QUE EXISTAN EN LA BASE DE DATOS
+// (asi el filtro siempre coincide con los valores reales de la tabla)
+$estadosBD = $pdo->query(
+    "SELECT DISTINCT estado FROM pedidos WHERE estado IS NOT NULL AND estado <> ''"
+)->fetchAll(PDO::FETCH_COLUMN);
+
+foreach ($estadosBD as $estadoBD) {
+    if (!in_array($estadoBD, $estadosPermitidos, true)) {
+        $estadosPermitidos[] = $estadoBD;
+    }
+}
 
 // VALIDAR FECHAS
 if ($desde !== '') {
@@ -36,10 +49,10 @@ if ($hasta !== '') {
     }
 }
 
-// VALIDAR QUE LA FECHA INICIAL NO SEA MAYOR
+// SI LA FECHA INICIAL ES MAYOR QUE LA FINAL, SE INTERCAMBIAN
 if ($desde !== '' && $hasta !== '' && $desde > $hasta) {
-    $desde = '';
-    $hasta = '';
+    [$desde, $hasta] = [$hasta, $desde];
+    $aviso = 'La fecha inicial era mayor que la final, por eso se intercambiaron.';
 }
 
 // VALIDAR ESTADO
@@ -80,6 +93,21 @@ if ($estado !== '') {
 $whereSQL = $where
     ? 'WHERE ' . implode(' AND ', $where)
     : '';
+
+// FILTROS ACTIVOS (PARA MOSTRARLOS EN PANTALLA)
+$filtrosActivos = [];
+
+if ($desde !== '') {
+    $filtrosActivos[] = 'Desde ' . $desde;
+}
+
+if ($hasta !== '') {
+    $filtrosActivos[] = 'Hasta ' . $hasta;
+}
+
+if ($estado !== '') {
+    $filtrosActivos[] = 'Estado: ' . str_replace('_', ' ', $estado);
+}
 
 
 // ==================================================
@@ -157,9 +185,9 @@ $sqlMeses = "
 
     $whereSQL
 
-    GROUP BY YEAR(p.created_at), MONTH(p.created_at)
+    GROUP BY mes
 
-    ORDER BY YEAR(p.created_at), MONTH(p.created_at)
+    ORDER BY mes
 ";
 
 $stmt = $pdo->prepare($sqlMeses);
@@ -412,7 +440,15 @@ foreach ($datosDestinos as $dato) {
                 Selecciona un periodo y un estado para consultar los pedidos.
             </p>
 
-            <form method="GET" class="report-filter">
+            <?php if ($aviso !== ''): ?>
+
+                <div class="alert alert-warning py-2">
+                    <?= h($aviso) ?>
+                </div>
+
+            <?php endif; ?>
+
+            <form method="GET" action="reportes.php#resultados" class="report-filter">
 
                 <div class="row g-3 align-items-end">
 
@@ -426,7 +462,8 @@ foreach ($datosDestinos as $dato) {
                             type="date"
                             name="desde"
                             class="form-control"
-                            value="<?= h($desde) ?>">
+                            value="<?= h($desde) ?>"
+                            onchange="this.form.submit()">
 
                     </div>
 
@@ -441,7 +478,8 @@ foreach ($datosDestinos as $dato) {
                             type="date"
                             name="hasta"
                             class="form-control"
-                            value="<?= h($hasta) ?>">
+                            value="<?= h($hasta) ?>"
+                            onchange="this.form.submit()">
 
                     </div>
 
@@ -452,7 +490,7 @@ foreach ($datosDestinos as $dato) {
                             Estado del pedido
                         </label>
 
-                        <select name="estado" class="form-select">
+                        <select name="estado" class="form-select" onchange="this.form.submit()">
 
                             <option value="">
                                 Todos los estados
@@ -496,7 +534,133 @@ foreach ($datosDestinos as $dato) {
 
             </form>
 
+
+
         </section>
+
+
+        <!-- HISTORIAL DE PEDIDOS -->
+
+        <section class="panel report-section" id="resultados">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <div>
+
+                    <h2>Historial de pedidos</h2>
+
+                    <p class="muted">
+                        <?= !empty($filtrosActivos) ? 'Filtros activos: ' . h(implode(' · ', $filtrosActivos)) : 'Mostrando todos los pedidos.' ?>
+                    </p>
+
+                </div>
+
+                <span class="badge text-bg-primary">
+
+                    <?= count($pedidos) ?> pedidos
+
+                </span>
+
+            </div>
+
+
+            <div class="table-responsive" style="max-height: 420px; overflow-y: auto;">
+
+                <table class="table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Pedido</th>
+
+                            <th>Cliente</th>
+
+                            <th>Destino</th>
+
+                            <th>Transportadora</th>
+
+                            <th>Guía</th>
+
+                            <th>Fecha</th>
+
+                            <th>Estado</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    <?php if (empty($pedidos)): ?>
+
+                        <tr>
+
+                            <td colspan="7" class="text-center py-4">
+
+                                <p class="muted mb-0">
+                                    No se encontraron pedidos con estos filtros.
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    <?php else: ?>
+
+                        <?php foreach ($pedidos as $p): ?>
+
+                            <tr>
+
+                                <td>
+                                    #<?= (int)$p['id'] ?>
+                                </td>
+
+                                <td>
+                                    <?= h($p['cliente']) ?>
+                                </td>
+
+                                <td>
+                                    <?= h($p['destino']) ?>
+                                </td>
+
+                                <td>
+                                    <?= h($p['transportadora'] ?: '-') ?>
+                                </td>
+
+                                <td>
+                                    <?= h($p['guia'] ?: '-') ?>
+                                </td>
+
+                                <td>
+                                    <?= h($p['created_at']) ?>
+                                </td>
+
+                                <td>
+
+                                    <span class="status status-<?= strtolower($p['estado']) ?>">
+
+                                        <?= h(str_replace('_', ' ', $p['estado'])) ?>
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        <?php endforeach; ?>
+
+                    <?php endif; ?>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
 
 
         <!-- GRAFICOS -->
@@ -589,128 +753,6 @@ foreach ($datosDestinos as $dato) {
 
         </section>
 
-
-        <!-- HISTORIAL DE PEDIDOS -->
-
-        <section class="panel">
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <div>
-
-                    <h2>Historial de pedidos</h2>
-
-                    <p class="muted">
-                        Consulta los pedidos según los filtros seleccionados.
-                    </p>
-
-                </div>
-
-                <span class="badge text-bg-primary">
-
-                    <?= count($pedidos) ?> pedidos
-
-                </span>
-
-            </div>
-
-
-            <div class="table-responsive">
-
-                <table class="table align-middle">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Pedido</th>
-
-                            <th>Cliente</th>
-
-                            <th>Destino</th>
-
-                            <th>Transportadora</th>
-
-                            <th>Guía</th>
-
-                            <th>Fecha</th>
-
-                            <th>Estado</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                    <?php if (empty($pedidos)): ?>
-
-                        <tr>
-
-                            <td colspan="7" class="text-center py-4">
-
-                                <p class="muted mb-0">
-                                    No se encontraron pedidos con estos filtros.
-                                </p>
-
-                            </td>
-
-                        </tr>
-
-                    <?php else: ?>
-
-                        <?php foreach ($pedidos as $p): ?>
-
-                            <tr>
-
-                                <td>
-                                    #<?= (int)$p['id'] ?>
-                                </td>
-
-                                <td>
-                                    <?= h($p['cliente']) ?>
-                                </td>
-
-                                <td>
-                                    <?= h($p['destino']) ?>
-                                </td>
-
-                                <td>
-                                    <?= h($p['transportadora'] ?? '-') ?>
-                                </td>
-
-                                <td>
-                                    <?= h($p['guia'] ?? '-') ?>
-                                </td>
-
-                                <td>
-                                    <?= h($p['created_at']) ?>
-                                </td>
-
-                                <td>
-
-                                    <span class="status status-<?= strtolower($p['estado']) ?>">
-
-                                        <?= h(str_replace('_', ' ', $p['estado'])) ?>
-
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
-                        <?php endforeach; ?>
-
-                    <?php endif; ?>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
 
     </main>
 

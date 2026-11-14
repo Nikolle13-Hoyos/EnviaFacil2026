@@ -1,15 +1,5 @@
 <?php
-/*
- * API de guías: genera y guarda la guía de un pedido.
- *
- * POST /api/generar_guia.php
- * Body JSON: { "pedido_id": 14, "transportadora": "Servientrega" }
- *
- * Respuesta: { "ok": true, "guia": "SV123456789", "transportadora": "...", "estado": "GUIA_GENERADA" }
- *
- * Hoy el número de guía se genera aquí mismo. Cuando se conecte una
- * transportadora real, solo se cambia la función generarNumeroGuia().
- */
+
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../config/db.php';
@@ -48,10 +38,7 @@ if (!isset($prefijos[$transportadora])) {
     responder(422, ['ok' => false, 'error' => 'Selecciona una transportadora válida.']);
 }
 
-/*
- * Precio estimado del envío según el peso y la transportadora
- * (misma fórmula de api/quote.php y cotizar.php).
- */
+
 function calcularTarifa(float $peso, string $transportadora): array
 {
     $extras = [
@@ -69,10 +56,7 @@ function calcularTarifa(float $peso, string $transportadora): array
     ];
 }
 
-/*
- * Aquí es donde se conectará la API real de cada transportadora.
- * Por ahora crea un número de guía único con el prefijo de la empresa.
- */
+
 function generarNumeroGuia(PDO $pdo, string $prefijo): string
 {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM pedidos WHERE guia = ?");
